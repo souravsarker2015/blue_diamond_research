@@ -1,0 +1,81 @@
+#### TO RUN THIS PROJECT ON LOCAL ENVIRONMENT:
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+==> STEP : 1 
+- clone the project. (git clone https://gitlab.com/django_warriors/starter_project_with_custom_user.git)
+- create env. (python3.10 -m venv env_starter)
+- start environment. ( source env_starter/bin/activate)
+- cd starter_project_with_custom_user
+- pip install -r requirements/local.txt
+
+
+==> STEP : 2 
+- create .env file in root directory.
+- paste this values on that file:
+
+SECRET_KEY='django-insecure-7c(-oq@qlajv2h@s3grwnc%@hl_^_qhv0m(ti@d^29$819*b-_'
+DEBUG=True
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+#### FEATURES:
+
+- Production level settigns
+- .env used for secure values
+- templates and static directory settings added.
+- custom user model included.
+
+
+
+
+#### COMMANDS:
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+- pip freeze > requirements/base_new.txt
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+## Creating Apps:
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+i) First Create a directory inside apps. Directory name will be same as app name. ex: apps/users.
+
+ii) - python manage.py startapp users apps/users.
+
+iii) Register the app in settings.py. ex:
+INSTALLED_APPS = [
+    ... other apps,
+    apps.example_app.
+]
+
+iv) Then go to users --> apps.py --> name = 'apps.users'
+
+#### MakeMigrations and Migrations:
+
+i) python manage.py makemigrations users.
+ii) python manage.py migrate users.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+## Existing things that is done:
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+==> templates, static
+- Settings for both templates and static files.
+- templates and static files can be placed both in root level and app level.
+
+==> .env (python-dotenv installed)
+- collecting secure values from .env file
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+

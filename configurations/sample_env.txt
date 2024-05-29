@@ -1,0 +1,17 @@
+BASE_URL=http://0.0.0.0:8011/
+SECRET_KET=django-insecure-y81v+fr*qy6%2o_wopv9ks)85(cmvrq89)%ljv4#r-b@n5k1(4
+
+DB_NAME=email_portal
+DB_USER=root
+DB_PASSWORD=root1234
+DB_HOST=127.0.0.1
+DB_PORT=5432
+
+
+EMAIL_HOST=smtp.gmail.com
+EMAIL_HOST_USER=sourov.techlogicians@gmail.com
+EMAIL_HOST_PASSWORD=ccgerwmditnbemeb
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+
+DJANGO_SETTINGS_MODULE=email_sending_portal.settings.local

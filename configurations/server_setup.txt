@@ -1,0 +1,112 @@
+Link 1 : How To Set Up Django with Postgres, Nginx, and Gunicorn on Ubuntu
+https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu
+
+Link 2 : How to deploy multiple Django apps (as subdomains) using nginx and Gunicorn
+https://www.digitalocean.com/community/questions/how-to-deploy-multiple-django-apps-as-subdomains-using-nginx-and-gunicorn
+
+
+#A Creating systemd Socket and Service Files for Gunicorn
+
+1. sudo nano /etc/systemd/system/email_gunicorn.service
+
+[Unit]
+Description=gunicorn daemon
+Requires=email_gunicorn.socket
+After=network.target email_gunicorn.socket
+
+
+[Service]
+User=techlogicians
+Group=techlogicians
+WorkingDirectory=/home/techlogicians/projects/email-sending-portal/email-sending-portal
+ExecStart=/home/techlogicians/projects/email-sending-portal/env_email/bin/gunicorn \
+    --access-logfile - \
+    --workers 3 \
+    --bind unix:/run/email_gunicorn.sock \
+    email_sending_portal.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
+
+2. sudo nano /etc/systemd/system/email_gunicorn.socket
+
+[Unit]
+Description=gunicorn socket
+
+[Socket]
+ListenStream=/run/email_gunicorn.sock
+
+[Install]
+WantedBy=sockets.target
+
+4. sudo systemctl start email_gunicorn.socket
+5. sudo systemctl enable email_gunicorn.socket
+6. sudo systemctl daemon-reload (if any changes made)
+7. sudo systemctl restart gunicorn (if any changes made)
+
+
+## B)— Configure Nginx to Proxy Pass to Gunicorn
+
+1. sudo nano /etc/nginx/sites-available/emailportal.com
+
+server {
+    listen 9443 ssl;
+    server_name 168.235.88.107;
+
+    ssl_certificate /home/techlogicians/mydomain.crt;
+    ssl_certificate_key /home/techlogicians/mydomain.key;
+
+    ssl_protocols TLSv1.2 TLSv1.3;  # Ensure only modern protocols are used
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
+
+    location = /favicon.ico {
+        access_log off;
+        log_not_found off;
+    }
+
+    location /static/ {
+        alias /home/techlogicians/projects/email-sending-portal/email-sending-portal/static/;
+    }
+
+    location /media/ {
+        alias /home/techlogicians/projects/email-sending-portal/email-sending-portal/media/;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/run/email_gunicorn.sock;
+    }
+}
+
+server {
+    listen 9090;
+    listen [::]:9090;
+
+    server_name 168.235.88.107;
+
+    return 302 https://$server_name:9443$request_uri;
+}
+
+
+2. sudo ln -s /etc/nginx/sites-available/emailportal.com /etc/nginx/sites-enabled
+3. sudo nginx -t
+4. sudo ufw allow 9443
+5. sudo ufw allow 9090
+6. sudo systemctl restart nginx
+
+
+##C Run Celerey
+1. Activate env
+2. run : python -m celery -A email_sending_portal worker -l info --detach --pidfile=celery-worker.pid
+
+
+
+
+
+
+
+
+
+
+
